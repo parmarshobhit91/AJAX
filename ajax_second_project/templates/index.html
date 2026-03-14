@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX</title>
+</head>
+<body>
+    <h1>Ajax Project 2</h1>
+    <h3>Live Search</h3>
+    <input type="text" name="" id="search" placeholder="Type something...." onkeyup="liveSearch()">
+    <ul id="results"></ul>
+
+<script>
+    function liveSearch() {
+        let query = document.getElementById("search").value;
+
+        fetch('/search?q=' + query)
+        .then(response => response.json())
+        .then(data => {
+            let resultList = document.getElementById("results");
+            resultList.innerHTML = "";
+            data.forEach(function(item){
+                let li = document.createElement("li");
+                li.textContent = item;
+                resultList.appendChild(li);
+            })
+        })
+    }
+</script>
+</body>
+</html>
