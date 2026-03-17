@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>1 to 1 Chat</title>
+</head>
+
+<body>
+
+<h2>Simple 1 to 1 Chat</h2>
+
+Your Name:
+<input type="text" id="sender">
+
+Chat With:
+<input type="text" id="receiver">
+
+<br><br>
+
+<div id="chat-box" style="border:1px solid black; height:200px; overflow:auto;"></div>
+
+<br>
+
+<input type="text" id="message">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+
+function sendMessage(){
+
+    let sender = document.getElementById("sender").value;
+    let receiver = document.getElementById("receiver").value;
+    let message = document.getElementById("message").value;
+
+    fetch("/send",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/x-www-form-urlencoded"
+        },
+        body:"sender="+sender+"&receiver="+receiver+"&message="+message
+    });
+
+    document.getElementById("message").value = "";
+
+}
+
+function loadMessages(){
+
+    let sender = document.getElementById("sender").value;
+    let receiver = document.getElementById("receiver").value;
+
+    fetch("/messages?user1="+sender+"&user2="+receiver)
+    .then(response => response.json())
+    .then(data => {
+
+        let chatBox = document.getElementById("chat-box");
+
+        chatBox.innerHTML = "";
+
+        data.forEach(function(msg){
+
+            let p = document.createElement("p");
+
+            p.textContent = msg.sender + ": " + msg.message;
+
+            chatBox.appendChild(p);
+
+        });
+
+    });
+
+}
+
+setInterval(loadMessages,1000);
+
+</script>
+
+</body>
+</html>
